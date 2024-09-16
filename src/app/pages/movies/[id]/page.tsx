@@ -2,6 +2,34 @@ import Fav from "@/app/components/common/icons/Fav";
 import Container from "@/app/components/layout/Container";
 import ContainerSlidesMovies from "@/app/components/layout/ContainerSlidesMovies";
 import Hero from "@/app/components/layout/Hero";
+import { Metadata } from 'next';
+
+export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
+  const movie = await searchMovieById(parseInt(params.id));
+
+  return {
+    title: movie.title,
+    description: movie.overview,
+    openGraph: {
+      title: movie.title,
+      description: movie.overview,
+      images: [
+        {
+          url: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
+          width: 1200,
+          height: 630,
+          alt: movie.title,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: movie.title,
+      description: movie.overview,
+      images: [`https://image.tmdb.org/t/p/w500${movie.poster_path}`],
+    },
+  };
+}
 
 import {
   getMovieCast,
